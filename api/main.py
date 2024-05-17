@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.params import Depends
 from sqlalchemy import create_engine, String
-from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase, Mapped, mapped_column,MappedAsDataclass
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
 
@@ -23,19 +23,22 @@ class ItemUpdate(BaseModel):
     description: Optional[str]
 
 
-DATABASE_URL = "sqlite:///test.db"
+DATABASE_URL = "sqlite:///:memory:"
 
 
-class Base(DeclarativeBase):
+class Base(DeclarativeBase, MappedAsDataclass):
     pass
 
 
 class DBItem(Base):
     __tablename__ = "items"
-
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(30))
     description: Mapped[Optional[str]]
+
+    def __init__(self, name, description):
+         self.name = name
+         self.description = description
 
 
 engine = create_engine(DATABASE_URL)
@@ -52,9 +55,6 @@ def get_db():
     finally:
         database.close()
 
-
-
-    
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
