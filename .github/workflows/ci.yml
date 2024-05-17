@@ -29,7 +29,7 @@ jobs:
         uses: actions/setup-python@v5.1.0
         with:
           # Version range or exact version of Python or PyPy to use, using SemVer's version range syntax. Reads from .python-version if unset.
-          python-version: 3.9.11          
+          python-version: 3.9         
 
       # Install dependencies
       - name: Install dependencies
