@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, String
 from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase, Mapped, mapped_column,MappedAsDataclass
 from pydantic import BaseModel
 from contextlib import asynccontextmanager
+from typing import List
 
 
 class Ceramica(BaseModel):
@@ -228,7 +229,10 @@ def create_ceramica(ceramica: CeramicaCreate, db: Session = Depends(get_db)) -> 
     db.refresh(db_ceramica)
     return Ceramica(**db_ceramica.__dict__)
 
-
+@app.get("/ceramicas")
+def read_ceramica(db: Session = Depends(get_db)) -> List[Ceramica]:
+    db_ceramicas = db.query(DBCeramica).all()
+    return [Ceramica(**db_ceramica.__dict__) for db_ceramica in db_ceramicas]
 
 
 @app.get("/ceramica/{inventario}")

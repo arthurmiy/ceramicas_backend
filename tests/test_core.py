@@ -176,6 +176,27 @@ def test_update_item():
     assert data["photo_amount_"] == 1   
 
 
+def test_get_item():
+
+    response = client.get("/ceramicas")
+    assert response.status_code == 200, response.text
+    data = response.json()
+    print(f"Got data: {data}")
+    assert len(data) > 0
+    first_item = data[0]
+    assert first_item["data"] == "2021-06-16T00:00:00.000Z"
+    assert first_item["inventario"] == "08.5.15"
+    assert first_item["nome_local"] == "Vinagreira grande"
+    assert first_item["ano_fab"] == 2010
+    assert first_item["fab_lugar"] == "Sergude"
+    assert first_item["fab_freguesia"] == "Oliveira"
+    assert first_item["alt_mm"] == 436
+    assert first_item["diam_maior_mm"] == 268
+    assert first_item["largura_mm"] == 285
+    assert first_item["peso_gr"] == 3104
+    assert first_item["photo1"] == "https://raw.githubusercontent.com/arthurmiy/ceramicas-repo/master/consolidado/08.5.15.png"
+    assert first_item["photo_amount_"] == 1   
+
 def test_delete_item():
     item_id = "08.5.15"
     response = client.delete(f"/ceramica/{item_id}")
